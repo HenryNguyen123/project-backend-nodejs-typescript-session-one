@@ -65,8 +65,8 @@ const addNewUser = async (firstName: string, lastName: string, email: string, ha
         }
 
         return {
-                EM: "get successfuly data",
-                EC: 0,
+                EM: "get fail data",
+                EC: 1,
                 DT: []
         }
     } catch (error) {
@@ -74,4 +74,33 @@ const addNewUser = async (firstName: string, lastName: string, email: string, ha
     }
 }
 
-module.exports = {getListUser, addNewUser}
+const deleteUserById = async(id: number) => {
+    try {
+        const data = await db.User.destroy({
+                                        where: {
+                                            id: id
+                                        },
+                    });
+        if (data == 1) {
+            return {
+                    EM: "delete user successfuly!",
+                    EC: 1,
+                    DT: []
+            }
+        }            
+        return {
+                EM: "delete user fail!",
+                EC: -1,
+                DT: []
+        }
+    } catch (error) {
+        console.log(error)
+        return {
+        EM: "Internal server error.",
+        EC: -500,
+        DT: []
+        };
+    }
+}
+
+module.exports = {getListUser, addNewUser, deleteUserById}

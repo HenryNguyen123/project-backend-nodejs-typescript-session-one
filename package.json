@@ -14,6 +14,7 @@
     "dev": "nodemon --watch src --ext ts --exec ts-node src/server.ts"
   },
   "devDependencies": {
+    "@types/multer": "^2.0.0",
     "@types/node": "^24.5.2",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
@@ -28,6 +29,7 @@
     "body-parser": "^2.2.0",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
+    "multer": "^2.0.2",
     "mysql2": "^3.15.0",
     "sequelize": "^6.37.7",
     "sequelize-cli": "^6.6.3"
