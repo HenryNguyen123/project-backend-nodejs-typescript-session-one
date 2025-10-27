@@ -14,6 +14,9 @@ const initApiRouter = (app: e.Express) => {
     router.put('/api/v1/users/update/:id', userController.readUser)
     router.delete('/api/v1/users/delete/:id', userController.deleteUser)
 
+    router.get('/api/v1/users/read/:id', userController.readUserById)
+
+
     return app.use('/', router)
 }
 

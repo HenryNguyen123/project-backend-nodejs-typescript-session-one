@@ -1,5 +1,5 @@
 const db = require('../models/index')
-
+const deleteFileImage = require('./deleteFileImage')
 import type {User} from '../typeModel/userType'
 
 interface userCheckData {
@@ -7,6 +7,30 @@ interface userCheckData {
             totalPages: number,
             users: User[]
         }
+
+const getUserById   = async (id: number) => {
+    try {
+        const user = await db.User.findOne({ where: { id: id} });
+        if (user) {
+            return {
+                EM: "get user successfuly ",
+                EC: 0,
+                DT: user
+            }        
+        }
+        return {
+            EM: "get user nothing!",
+            EC: -1,
+            DT: []
+        }
+    } catch (error) {
+        return {
+            EM: "get user nothing!",
+            EC: -1,
+            DT: []
+        }
+    }
+}
 
 const getListUser = async (page: number, limit: number) => {
     try {
@@ -76,20 +100,30 @@ const addNewUser = async (firstName: string, lastName: string, email: string, ha
 
 const deleteUserById = async(id: number) => {
     try {
-        const data = await db.User.destroy({
-                                        where: {
-                                            id: id
-                                        },
-                    });
-        if (data == 1) {
+        const user = await db.User.findOne({ where: { id: id} });
+        if (user) {
+            const nameFile = user.avatar
+            if (nameFile) deleteFileImage.removeFile(nameFile)
+            const data = await db.User.destroy({
+                                            where: {
+                                                id: id
+                                            },
+                        });
+            if (data == 1) {
+                return {
+                        EM: "delete user successfuly!",
+                        EC: 1,
+                        DT: []
+                }
+            }
             return {
-                    EM: "delete user successfuly!",
-                    EC: 1,
+                    EM: "delete user fail!",
+                    EC: -1,
                     DT: []
             }
-        }            
+        }
         return {
-                EM: "delete user fail!",
+                EM: "Error, nothing user!",
                 EC: -1,
                 DT: []
         }
@@ -103,4 +137,4 @@ const deleteUserById = async(id: number) => {
     }
 }
 
-module.exports = {getListUser, addNewUser, deleteUserById}
+module.exports = {getUserById, getListUser, addNewUser, deleteUserById}

@@ -15,6 +15,30 @@ const hashUserPassword = async (password: string) => {
   return hash
 }
 
+const readUserById = async (req: any, res: any) => {
+    try {
+        const id = req.params.id
+        const data = await userServece.getUserById(id)
+        console.log("data user by id: ", data)
+        if (data) {
+            return res.status(200).json({
+                EM: data.EM,
+                EC: data.EC,
+                DT: data.DT,
+                status: 200
+            }) 
+        }
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            EM: "error from server",
+            EC: 1,
+            DT: '',
+            status: 500
+        })
+    }
+}
+
 const readUser = async (req: any, res: any) => {
     try {
         const page: number = req.query.page ? parseInt(req.query.page) : 1
@@ -99,4 +123,4 @@ const deleteUser = async(req: any, res: any) => {
 };
 
 
-module.exports = {readUser, createUser, deleteUser}
+module.exports = {readUser, createUser, deleteUser, readUserById}
