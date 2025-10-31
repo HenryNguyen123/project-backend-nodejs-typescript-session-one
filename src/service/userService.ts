@@ -1,12 +1,22 @@
 const db = require('../models/index')
 const deleteFileImage = require('./deleteFileImage')
 import type {User} from '../typeModel/userType'
+const bcrypt = require("bcryptjs")
 
 interface userCheckData {
             totalRows: number,
             totalPages: number,
             users: User[]
         }
+
+
+
+
+const hashUserPassword = async (password: string) => {
+  const salt = await bcrypt.genSaltSync(10);
+  const hash: string = await bcrypt.hashSync(password, salt);
+  return hash
+}
 
 const getUserById   = async (id: number) => {
     try {
@@ -41,10 +51,11 @@ const getListUser = async (page: number, limit: number) => {
                                 raw: true,
                                 nest: true,
                                 offset: offset,
-                                limit: limit
+                                limit: limit,
+                                logging: false,
         });
         const pageCount = Math.ceil(count / limit);
-        console.log('uers la: ', rows)
+        // console.log('uers la: ', rows)
         let data: userCheckData = {
             totalRows : count,
             totalPages : pageCount,
@@ -70,8 +81,25 @@ const getListUser = async (page: number, limit: number) => {
     }
 }
 
-const addNewUser = async (firstName: string, lastName: string, email: string, hashPassword: string, userName: string, avatar: string, age: string) => {
+const addNewUser = async (firstName: string, lastName: string, email: string, password: string, userName: string, avatar: string, age: string) => {
     try {
+        const checkUserName = await db.User.findOne({ where: { userName: userName } });
+        if (checkUserName) {
+            return {
+                EM: "add user fail, userName unique!",
+                EC: -2,
+                DT: []
+            }
+        }
+        const checkEmail = await db.User.findOne({ where: { email: email } });
+        if (checkEmail) {
+            return {
+                EM: "add user fail, email unique!",
+                EC: -3,
+                DT: []
+            }
+        }
+        const hashPassword = await hashUserPassword(password)
         const user: User[] = await db.User.create({
                                                     firstName: firstName, 
                                                     lastName: lastName, 
@@ -79,7 +107,9 @@ const addNewUser = async (firstName: string, lastName: string, email: string, ha
                                                     password: hashPassword, 
                                                     userName: userName, 
                                                     avatar: avatar, 
-                                                    age: age});
+                                                    age: age,
+                                                    logging: false,
+                                                });
         if (user) {
             return {
                 EM: "get successfuly data",

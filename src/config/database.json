@@ -1,23 +1,50 @@
 {
   "development": {
-    "username": "root",
-    "password": null,
-    "database": "database_nodejssever",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "username": "sa",
+    "password": "123456",
+    "database": "database_nodejsserver",
+    "host": "localhost\\SQLEXPRESS",
+    "dialect": "mssql",
+    "port": 1433,
+    "dialectOptions": {
+      "options": {
+        "encrypt": false,
+        "enableArithAbort": true
+      }
+    },
+    "pool": {
+      "max": 5,
+      "min": 0,
+      "acquire": 30000,
+      "idle": 10000
+    }
   },
   "test": {
-    "username": "root",
-    "password": null,
+    "username": "sa",
+    "password": "123456",
     "database": "database_test",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "host": "localhost",
+    "dialect": "mssql",
+    "port": 1433,
+    "dialectOptions": {
+      "options": {
+        "encrypt": false,
+        "enableArithAbort": true
+      }
+    }
   },
   "production": {
-    "username": "root",
-    "password": null,
+    "username": "sa",
+    "password": "123456",
     "database": "database_production",
-    "host": "127.0.0.1",
-    "dialect": "mysql"
+    "host": "localhost",
+    "dialect": "mssql",
+    "port": 1433,
+    "dialectOptions": {
+      "options": {
+        "encrypt": false,
+        "enableArithAbort": true
+      }
+    }
   }
 }

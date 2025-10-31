@@ -6,20 +6,14 @@
 // const multer = require("multer")
 // const path = require("path")
 
-const bcrypt = require("bcryptjs")
 const userServece = require('../service/userService')
 
-const hashUserPassword = async (password: string) => {
-  const salt = await bcrypt.genSaltSync(10);
-  const hash: string = await bcrypt.hashSync(password, salt);
-  return hash
-}
 
 const readUserById = async (req: any, res: any) => {
     try {
         const id = req.params.id
         const data = await userServece.getUserById(id)
-        console.log("data user by id: ", data)
+        // console.log("data user by id: ", data)
         if (data) {
             return res.status(200).json({
                 EM: data.EM,
@@ -43,7 +37,7 @@ const readUser = async (req: any, res: any) => {
     try {
         const page: number = req.query.page ? parseInt(req.query.page) : 1
         const limit: number = req.query.limit ? parseInt(req.query.limit) : 10 
-        console.log('page, limit la: ', page, ', ', limit)
+        // console.log('page, limit la: ', page, ', ', limit)
         const data = await userServece.getListUser(page , limit)
         return res.status(200).json({
             EM: data.EM,
@@ -63,8 +57,8 @@ const readUser = async (req: any, res: any) => {
 };
 
 const createUser = async (req: any, res: any) => {
-    console.log('check data: ', req.body)
-    console.log("file info:", req.file);
+    // console.log('check data: ', req.body)
+    // console.log("file info:", req.file);
     const firstName: string = req.body.firstName
     const lastName: string = req.body.lastName
     const email: string = req.body.email
@@ -73,11 +67,10 @@ const createUser = async (req: any, res: any) => {
     const avatar = req.file
     const age:number = req.body.age
 
-    const hashPassword = await hashUserPassword(password)
-    const avatarPath = avatar ? `/src/public/users/avatar/${avatar.filename}` : '';
+    const avatarPath = avatar ? `/users/avatar/${avatar.filename}` : '';
 
     try {
-        const data = await userServece.addNewUser(firstName, lastName, email, hashPassword, username, avatarPath, age)
+        const data = await userServece.addNewUser(firstName, lastName, email, password, username, avatarPath, age)
 
         return res.status(200).json({
             EM: data.EM,
@@ -101,7 +94,7 @@ const updateUser = (req: any, res: any) => {
 };
 
 const deleteUser = async(req: any, res: any) => {
-    console.log("delete user id: ", req.body)
+    // console.log("delete user id: ", req.body)
     const id: number = req.params.id
     try {
         const data = await userServece.deleteUserById(id)
