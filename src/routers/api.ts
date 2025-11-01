@@ -11,7 +11,7 @@ const userController = require("../controllers/userController");
 const initApiRouter = (app: e.Express) => {
     router.get('/api/v1/users/read', userController.readUser)
     router.post('/api/v1/users/create', uploadImage.single('avatar'), userController.createUser)
-    router.put('/api/v1/users/update/:id', userController.readUser)
+    router.put('/api/v1/users/update/:id', uploadImage.single('avatar'), userController.updateUser)
     router.delete('/api/v1/users/delete/:id', userController.deleteUser)
 
     router.get('/api/v1/users/read/:id', userController.readUserById)

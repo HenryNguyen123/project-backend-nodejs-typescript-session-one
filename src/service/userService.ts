@@ -3,11 +3,30 @@ const deleteFileImage = require('./deleteFileImage')
 import type {User} from '../typeModel/userType'
 const bcrypt = require("bcryptjs")
 
+interface UserInput {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  userName: string;
+  avatarPath?: string;
+  age?: string;
+}
+
+interface UserInputEdit {
+  id: number;  
+  firstName?: string;
+  lastName?: string;
+  password?: string;
+  avatarPath?: string;
+  age?: string;
+}
+
 interface userCheckData {
             totalRows: number,
             totalPages: number,
             users: User[]
-        }
+}
 
 
 
@@ -81,7 +100,7 @@ const getListUser = async (page: number, limit: number) => {
     }
 }
 
-const addNewUser = async (firstName: string, lastName: string, email: string, password: string, userName: string, avatar: string, age: string) => {
+const addNewUser = async (firstName: string, lastName: string, email: string, password: string, userName: string, avatarPath: string, age: string) => {
     try {
         const checkUserName = await db.User.findOne({ where: { userName: userName } });
         if (checkUserName) {
@@ -106,7 +125,7 @@ const addNewUser = async (firstName: string, lastName: string, email: string, pa
                                                     email: email, 
                                                     password: hashPassword, 
                                                     userName: userName, 
-                                                    avatar: avatar, 
+                                                    avatar: avatarPath, 
                                                     age: age,
                                                     logging: false,
                                                 });
@@ -132,7 +151,8 @@ const deleteUserById = async(id: number) => {
     try {
         const user = await db.User.findOne({ where: { id: id} });
         if (user) {
-            const nameFile = user.avatar
+            console.log("avartar user url: ", user.avatar)
+            const nameFile = "src/public" + user.avatar
             if (nameFile) deleteFileImage.removeFile(nameFile)
             const data = await db.User.destroy({
                                             where: {
@@ -142,7 +162,7 @@ const deleteUserById = async(id: number) => {
             if (data == 1) {
                 return {
                         EM: "delete user successfuly!",
-                        EC: 1,
+                        EC: 0,
                         DT: []
                 }
             }
@@ -167,4 +187,57 @@ const deleteUserById = async(id: number) => {
     }
 }
 
-module.exports = {getUserById, getListUser, addNewUser, deleteUserById}
+const handleEdituser = async (data: UserInputEdit) => {
+    try {   
+        const user = await db.User.findOne({ where: { id: data.id} });
+        if(user) {
+            const getAvatar: string = data.avatarPath ? data.avatarPath : user.avatar
+            let checkPas: string | null = ""
+            if (data.password) {
+                checkPas =  await hashUserPassword(data.password)
+            }
+            const getPassword = data.password ? checkPas : user.password
+            const result = await db.User.update(
+                                                {   lastName: data.lastName,
+                                                    firstName: data.firstName,
+                                                    avatar: getAvatar,
+                                                    age: data.age,
+                                                    password: getPassword
+                                                },
+                                                {
+                                                    where: {
+                                                        id: data.id
+                                                    },
+                                                },
+                                            );
+            if(result[0] > 0) {
+                return {
+                    EM: "edit user successfuly data",
+                    EC: 0,
+                    DT: result
+                }
+            }    
+            return {
+                EM: "edit user nothing",
+                EC: -1,
+                DT: []
+             }                            
+        }
+        else {
+            return {
+                    EM: "không tồn tại user!",
+                    EC: -1,
+                    DT: []
+            }
+        } 
+    } catch (error) {
+        console.log(error)
+        return {
+        EM: "Internal server error.",
+        EC: -500,
+        DT: []
+        }; 
+    }
+}
+
+module.exports = {getUserById, getListUser, addNewUser, handleEdituser, deleteUserById}

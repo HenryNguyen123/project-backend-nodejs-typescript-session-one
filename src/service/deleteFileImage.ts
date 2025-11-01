@@ -4,6 +4,7 @@ const path = require('path')
 
 const removeFile = async (nameFile: string) => {
     const filePath = path.join(process.cwd(),nameFile);
+    console.log("file là: ", filePath)
     try {
             await fs.unlink(filePath);
             console.log("Deleted avatar successfully!");
