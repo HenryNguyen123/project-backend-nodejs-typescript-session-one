@@ -1,7 +1,7 @@
 const db = require('../models/index')
-const deleteFileImage = require('./deleteFileImage')
+const deleteFileImage = require('../untils/deleteFileImage')
 import type {User} from '../typeModel/userType'
-const bcrypt = require("bcryptjs")
+const security = require('../untils/security')
 
 interface UserInput {
   firstName: string;
@@ -28,15 +28,6 @@ interface userCheckData {
             users: User[]
 }
 
-
-
-
-const hashUserPassword = async (password: string) => {
-  const salt = await bcrypt.genSaltSync(10);
-  const hash: string = await bcrypt.hashSync(password, salt);
-  return hash
-}
-
 const getUserById   = async (id: number) => {
     try {
         const user = await db.User.findOne({ where: { id: id} });
@@ -53,11 +44,12 @@ const getUserById   = async (id: number) => {
             DT: []
         }
     } catch (error) {
+        console.log(error)
         return {
-            EM: "get user nothing!",
-            EC: -1,
-            DT: []
-        }
+        EM: "Internal server error.",
+        EC: -500,
+        DT: []
+        }; 
     }
 }
 
@@ -97,6 +89,11 @@ const getListUser = async (page: number, limit: number) => {
         
     } catch (error) {
         console.log(error)
+        return {
+        EM: "Internal server error.",
+        EC: -500,
+        DT: []
+        }; 
     }
 }
 
@@ -118,7 +115,7 @@ const addNewUser = async (firstName: string, lastName: string, email: string, pa
                 DT: []
             }
         }
-        const hashPassword = await hashUserPassword(password)
+        const hashPassword = await security.hashUserPassword(password)
         const user: User[] = await db.User.create({
                                                     firstName: firstName, 
                                                     lastName: lastName, 
@@ -144,6 +141,11 @@ const addNewUser = async (firstName: string, lastName: string, email: string, pa
         }
     } catch (error) {
         console.log(error)
+        return {
+        EM: "Internal server error.",
+        EC: -500,
+        DT: []
+        }; 
     }
 }
 
@@ -194,7 +196,7 @@ const handleEdituser = async (data: UserInputEdit) => {
             const getAvatar: string = data.avatarPath ? data.avatarPath : user.avatar
             let checkPas: string | null = ""
             if (data.password) {
-                checkPas =  await hashUserPassword(data.password)
+                checkPas =  await security.hashUserPassword(data.password)
             }
             const getPassword = data.password ? checkPas : user.password
             const result = await db.User.update(

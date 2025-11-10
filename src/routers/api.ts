@@ -6,7 +6,7 @@ const router = express.Router();
 const uploadImage = require("../Middleware/muterFile")
 
 const userController = require("../controllers/userController");
-
+const authController = require('../controllers/authController')
 
 const initApiRouter = (app: e.Express) => {
     router.get('/api/v1/users/read', userController.readUser)
@@ -15,6 +15,8 @@ const initApiRouter = (app: e.Express) => {
     router.delete('/api/v1/users/delete/:id', userController.deleteUser)
 
     router.get('/api/v1/users/read/:id', userController.readUserById)
+    
+    router.post('/api/v1/auth/login', authController.loginAuth)
 
 
     return app.use('/', router)
