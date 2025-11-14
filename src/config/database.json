@@ -2,7 +2,7 @@
   "development": {
     "username": "sa",
     "password": "123456",
-    "database": "database_nodejsserver",
+    "database": "database_nodejs",
     "host": "localhost\\SQLEXPRESS",
     "dialect": "mssql",
     "port": 1433,

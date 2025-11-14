@@ -1,6 +1,6 @@
-const db = require('../models/index.js')
-const security = require('../untils/security')
-const JWT = require('../untils/JWT')
+const db = require('../../models/index.js')
+const security = require('../../untils/security')
+const JWT = require('../../untils/JWT/JWT')
 
 interface dataLogin {
     userName: string,
@@ -54,7 +54,7 @@ const handleLogin = async (data: dataLogin) => {
                 DT: []
              }  
         }
-    } catch (error) {
+    } catch (error: unknown) {
         console.log(error)
         return {
             EM: "Internal server error.",
@@ -64,4 +64,17 @@ const handleLogin = async (data: dataLogin) => {
     }
 }
 
-module.exports = {handleLogin}
+const handleLogOut = async () => {
+    try {
+        
+    } catch (error: unknown) {
+        console.log(error)
+        return {
+            EM: "Internal server error.",
+            EC: -500,
+            DT: []
+        }; 
+    }
+}
+
+module.exports = {handleLogin, handleLogOut}

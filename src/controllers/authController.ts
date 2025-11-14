@@ -1,4 +1,4 @@
-const authService = require('../service/authService')
+const authService = require('../service/authentication/authService')
 
 
 interface dataLogin {

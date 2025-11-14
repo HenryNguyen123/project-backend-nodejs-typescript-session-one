@@ -7,6 +7,7 @@ const uploadImage = require("../Middleware/muterFile")
 
 const userController = require("../controllers/userController");
 const authController = require('../controllers/authController')
+const JWTController = require('../controllers/JWTController')
 
 const initApiRouter = (app: e.Express) => {
     router.get('/api/v1/users/read', userController.readUser)
@@ -17,6 +18,8 @@ const initApiRouter = (app: e.Express) => {
     router.get('/api/v1/users/read/:id', userController.readUserById)
     
     router.post('/api/v1/auth/login', authController.loginAuth)
+
+    router.post('/api/v1/auth/remove-jwt', JWTController.destroy)
 
 
     return app.use('/', router)
